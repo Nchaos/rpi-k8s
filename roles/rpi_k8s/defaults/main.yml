@@ -1,0 +1,23 @@
+---
+
+rpi_upgrade_system: false
+
+rpi_user: nchao
+rpi_user_password: password
+
+rpi_remove_packages:
+  - docker
+  - docker-engine
+  - docker.io
+  - containerd
+  - runc
+  - wmdocker
+
+rpi_packages:
+  - ca-certificates
+  - curl
+  - git
+  - gnupg
+  - lsb-release
+  - vim
+

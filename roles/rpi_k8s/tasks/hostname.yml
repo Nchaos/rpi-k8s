@@ -1,0 +1,12 @@
+---
+
+# Ansible built in Function for Debian Systems is currently broken
+# - name: Configure hostname
+#   hostname:
+#     name: '{{ inventory_hostname }}'
+#   register: hostname_change
+
+# Temporary Hostname override for the above function
+- name: Configure hostname 
+  become: yes
+  command: 'hostnamectl set-hostname {{ inventory_hostname }}.{{ domain_name }}'

@@ -1,0 +1,21 @@
+---
+
+- name: Upgrade the OS (apt-get dist-upgrade)
+  become: yes
+  apt:
+    upgrade: dist
+    update_cache: true
+    cache_valid_time: 3600
+  when: rpi_upgrade_system | bool
+
+- name: Remove Packages
+  become: yes
+  apt:
+    name: "{{ rpi_remove_packages }}"
+    state: absent
+
+- name: Install Packages
+  become: yes
+  apt:
+    name: "{{ rpi_packages }}"
+    state: latest
