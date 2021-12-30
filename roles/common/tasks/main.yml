@@ -11,8 +11,13 @@
 #   apt:
 #     upgrade: dist
 
-- name: Configure hostname
-  ansible.builtin.hostname:
-    name: '{{ inventory_hostname }}'
-  async: 1000
-  poll: 0
+# Ansible built in Function for Debian Systems is currently broken
+# - name: Configure hostname
+#   hostname:
+#     name: '{{ inventory_hostname }}'
+#   register: hostname_change
+
+# Temporary Hostname override for the above function
+- name: Configure hostname 
+  become: yes
+  command: 'hostnamectl set-hostname {{ inventory_hostname }}.{{ domain_name }}'
