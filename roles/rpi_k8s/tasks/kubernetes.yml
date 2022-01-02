@@ -1,0 +1,71 @@
+---
+
+- name: Update cgroups on Ubuntu Pies
+  become: yes
+  lineinfile:
+    path: /boot/firmware/cmdline.txt
+    line: 'cgroup_enable=memory swapaccount=1 cgroup_memory=1 cgroup_enable=cpuset'
+  when: inventory_hostname in groups['ubuntu_pies']
+  register: ubuntu_cgroups
+
+- name: Update cgroups on Raspberry Pies
+  become: yes
+  lineinfile:
+    path: /boot/cmdline.txt
+    line: 'cgroup_enable=memory swapaccount=1 cgroup_memory=1 cgroup_enable=cpuset'
+  when: inventory_hostname in groups['raspberry_pies']
+  register: raspberry_cgroups
+
+- name: Reboot Ubuntu Hosts to update cgroups
+  become: yes
+  reboot:
+    reboot_timeout: 3600
+  when: (ubuntu_cgroups.changed == true) and (inventory_hostname in groups['ubuntu_pies'])
+
+- name: Reboot Raspberry Hosts to update cgroups
+  become: yes
+  reboot:
+    reboot_timeout: 3600
+  when: (raspberry_cgroups.changed == true) and (inventory_hostname in groups['raspberry_pies'])
+
+- name: Add kubernetes GPG public key
+  become: yes
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add Kubernetes Repository
+  become: yes
+  copy:
+    src: files/kubernetes.list
+    dest: /etc/apt/sources.list.d
+
+- name: Allow iptables to work with bridged Traffic
+  become: yes
+  copy:
+    src: files/k8s.conf
+    dest: /etc/sysctl.d
+  register: sysctl_update
+
+- name: Apply sysctl updates
+  become: yes
+  command: 'sysctl --system'
+  when: sysctl_update.changed == true
+
+- name: Install Kubernetes
+  become: yes
+  apt:
+    name:
+    - kubelet
+    - kubeadm
+    - kubectl
+    state: latest
+    update_cache: true
+
+- name: Generate K8s Token
+  command: 'kubeadm token generate'
+  register: token
+  run_once: true
+
+- name: print token
+  command: 'kubeadm init --token={{ token.stdout }}'

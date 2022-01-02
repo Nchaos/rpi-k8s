@@ -14,10 +14,12 @@ rpi_remove_packages:
   - wmdocker
 
 rpi_packages:
+  - apt-transport-https
   - ca-certificates
   - curl
   - git
   - gnupg
+  - gnupg-agent
   - lsb-release
+  - software-properties-common
   - vim
-

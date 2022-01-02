@@ -5,7 +5,7 @@
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
-    keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+#    keyring: /usr/share/keyrings/docker-archive-keyring.gpg
 
 - name: Add Docker Repository
   become: yes
@@ -25,6 +25,12 @@
     name: docker-ce
     state: latest
     update_cache: true
+
+- name: Configure docker to use systemd as a cgroups driver
+  become: yes
+  copy:
+    src: files/daemon.json
+    dest: /etc/docker/daemon.json
 
 - name: Start/enable docker
   become: yes

@@ -1,9 +1,11 @@
 ---
 
-- import_tasks: upgrades_and_packages.yml
+# - import_tasks: upgrades_and_packages.yml
 
-- import_tasks: hostname.yml
+# - import_tasks: hostname.yml
 
-- import_tasks: docker.yml
+# - import_tasks: docker.yml
 
-- import_tasks: users.yml
+# - import_tasks: users.yml
+
+- import_tasks: kubernetes.yml

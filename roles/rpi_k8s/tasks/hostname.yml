@@ -3,7 +3,7 @@
 # Ansible built in Function for Debian Systems is currently broken
 # - name: Configure hostname
 #   hostname:
-#     name: '{{ inventory_hostname }}'
+#     name: '{{ inventory_hostname }}.{{ domain_name }}'
 #   register: hostname_change
 
 # Temporary Hostname override for the above function
